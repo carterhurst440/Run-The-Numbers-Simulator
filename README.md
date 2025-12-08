@@ -37,7 +37,7 @@ This repository hosts a fresh branch of **Run The Numbers** focused on simulatin
 ## Simulator usage
 1. Open `index.html` in a browser (or serve the repo root with `python -m http.server 8000` and visit `http://localhost:8000`).
 2. Tap a **chip** in the rack along the bottom to choose a wager size (5, 10, 25, 100).
-3. Click any **invisible hotspot** on the playmat art to drop the selected chip value onto that printed region. The overlays are sized and positioned to match the artwork:
+3. Click any **hotspot** on the playmat art (faint dashed outlines with labels) to drop the selected chip value onto that printed region. The overlays are sized and positioned to match the artwork:
    - **Number bets** (A–10) cover each printed column of hearts/spades/clubs/diamonds.
    - **Bust ranks and suits** sit on the right-side circles beneath the “Bust Bets” banner.
    - **Card-count buckets** map to the colored boxes across the lower rail (1 card through 8+).

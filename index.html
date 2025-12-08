@@ -53,10 +53,10 @@
 
     .card-track {
       position: absolute;
-      top: 6%;
+      top: 5.5%;
       left: 50%;
       transform: translateX(-50%);
-      width: 74%;
+      width: 70%;
       display: grid;
       grid-template-columns: repeat(10, 1fr);
       gap: 10px;
@@ -78,13 +78,13 @@
 
     .bust-slot {
       position: absolute;
-      right: 7.5%;
-      top: 30%;
-      width: 132px;
-      height: 132px;
+      right: 6.5%;
+      top: 31%;
+      width: 124px;
+      height: 124px;
       border-radius: 50%;
       border: 2px dashed var(--accent);
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.24);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -96,15 +96,19 @@
 
     .hotspot {
       position: absolute;
-      border: 2px solid transparent;
-      background: transparent;
+      border: 1px dashed rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.02);
       padding: 0;
       pointer-events: auto;
       border-radius: 12px;
       transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+      color: var(--muted);
+      font-size: 12px;
+      display: grid;
+      place-items: center;
     }
 
-    .hotspot:hover { border-color: rgba(255, 255, 255, 0.25); box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.06); }
+    .hotspot:hover { border-color: rgba(255, 255, 255, 0.35); box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.08); }
     .hotspot.circle { border-radius: 50%; }
     .hotspot .amount {
       position: absolute;
@@ -116,9 +120,23 @@
       font-weight: 700;
       text-shadow: 0 2px 4px rgba(0,0,0,0.6);
     }
-    .hotspot.active { border-color: rgba(37, 208, 255, 0.8); box-shadow: 0 0 0 8px rgba(37, 208, 255, 0.12); background: rgba(37,208,255,0.08); }
+    .hotspot.active { border-color: rgba(37, 208, 255, 0.85); box-shadow: 0 0 0 8px rgba(37, 208, 255, 0.15); background: rgba(37,208,255,0.1); }
+
+    .hotspot::after {
+      content: attr(data-label);
+      position: absolute;
+      bottom: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      pointer-events: none;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.55);
+    }
 
     .paytable-hotspot { color: var(--muted); font-size: 12px; padding: 8px 10px; display: flex; align-items: center; gap: 6px; }
+    .paytable-hotspot::after { display: none; }
     .paytable-hotspot input { pointer-events: auto; }
 
     .status-bar {
