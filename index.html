@@ -6,17 +6,18 @@
   <title>Run The Numbers — Playmat Simulator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --panel-bg: rgba(18, 18, 18, 0.82);
-      --panel-border: rgba(255, 255, 255, 0.1);
-      --accent: #f8d64e;
-      --text: #f4f6fb;
-      --muted: #a9b3c4;
-      --card-bg: rgba(255, 255, 255, 0.06);
-      --success: #6be39f;
-      --danger: #f47373;
+      --bg: #080a10;
+      --glow: rgba(0, 255, 255, 0.2);
+      --chip: #ff6b6b;
+      --text: #e9eef7;
+      --muted: #9fb4d6;
+      --accent: #25d0ff;
+      --card-slot: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.25);
+      --pill: rgba(0, 0, 0, 0.55);
     }
 
     * { box-sizing: border-box; }
@@ -24,389 +25,277 @@
     body {
       margin: 0;
       min-height: 100vh;
+      background: radial-gradient(circle at 20% 20%, rgba(33, 150, 243, 0.05), transparent 45%),
+                  radial-gradient(circle at 80% 0%, rgba(255, 64, 129, 0.08), transparent 35%),
+                  var(--bg);
       font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0c0f16;
       color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+      gap: 16px;
     }
 
-    h1 {
-      margin: 16px auto;
-      text-align: center;
-      letter-spacing: 0.5px;
-    }
+    h1 { margin: 0; letter-spacing: 0.04em; }
 
-    .playmat-wrapper {
+    .table-wrap {
       position: relative;
-      max-width: 1200px;
-      margin: 0 auto 32px;
-      padding: 12px;
-    }
-
-    .playmat {
-      position: relative;
+      width: min(1280px, 95vw);
+      aspect-ratio: 16 / 7.3;
       background-image: url('https://res.cloudinary.com/ds1mvnflk/image/upload/v1705936744/oetrqkerubydmvesmdq7.png');
       background-size: cover;
       background-position: center;
-      border-radius: 16px;
-      border: 1px solid var(--panel-border);
-      min-height: 720px;
-      display: flex;
-      align-items: stretch;
-      justify-content: center;
+      border-radius: 18px;
       overflow: hidden;
+      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.35);
     }
 
-    .panel {
-      background: var(--panel-bg);
-      border-left: 1px solid var(--panel-border);
-      width: 420px;
-      padding: 16px;
-      overflow-y: auto;
-      backdrop-filter: blur(6px);
+    .overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
     }
 
-    .panel h2 {
-      margin-top: 0;
-      margin-bottom: 8px;
+    .card-track {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 8px;
+      pointer-events: none;
     }
 
-    .flex {
+    .card-slot {
+      height: 62px;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      background: var(--card-slot);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      backdrop-filter: blur(4px);
+    }
+
+    .bust-slot {
+      position: absolute;
+      right: 4.5%;
+      top: 34%;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 2px dashed var(--accent);
+      background: rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      pointer-events: none;
+      text-align: center;
+    }
+
+    .bet-spot {
+      position: absolute;
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      background: rgba(0, 0, 0, 0.45);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      pointer-events: auto;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    .bet-spot:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+    .bet-spot .amount { position: absolute; bottom: -18px; font-size: 12px; color: var(--accent); }
+
+    .rail {
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      bottom: 20%;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .rail button {
+      pointer-events: auto;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.6);
+      color: var(--text);
+      padding: 10px 0;
+      font-weight: 700;
+      text-shadow: 0 0 8px rgba(0,0,0,0.3);
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    .rail button:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,0.35); }
+
+    .suit-row {
+      position: absolute;
+      left: 11%;
+      bottom: 28%;
       display: flex;
       gap: 12px;
-      flex-wrap: wrap;
+      pointer-events: none;
     }
 
-    label {
-      display: block;
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 4px;
+    .suit-row button {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(0, 0, 0, 0.55);
+      color: #ff6b6b;
+      font-size: 20px;
+      font-weight: 700;
+      pointer-events: auto;
     }
 
-    select, input[type="number"], input[type="text"] {
-      width: 100%;
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid var(--panel-border);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text);
-    }
-
-    input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    button {
-      cursor: pointer;
-      padding: 10px 14px;
-      border: none;
-      border-radius: 10px;
-      font-weight: 600;
-      transition: transform 120ms ease, box-shadow 120ms ease;
-      color: #0b0c10;
-      background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-    }
-
-    button.secondary {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text);
-      border: 1px solid var(--panel-border);
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    button:not(:disabled):hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-    }
-
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 12px;
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text);
-      gap: 6px;
-      border: 1px solid var(--panel-border);
-    }
-
-    .stacked-cards {
+    .paytables {
+      position: absolute;
+      left: 11%;
+      top: 32%;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .card {
-      padding: 10px;
-      border-radius: 12px;
-      border: 1px solid var(--panel-border);
-      background: var(--card-bg);
-      min-height: 72px;
-    }
-
-    .card strong {
-      display: block;
-      font-size: 18px;
-      margin-bottom: 6px;
-    }
-
-    .card .meta {
+      gap: 6px;
+      pointer-events: auto;
       color: var(--muted);
-      font-size: 13px;
     }
 
-    .bets-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
-      font-size: 14px;
-    }
-
-    .bets-table th, .bets-table td {
-      text-align: left;
-      padding: 6px;
-      border-bottom: 1px solid var(--panel-border);
-    }
-
-    .bets-table th {
-      color: var(--muted);
-      font-weight: 600;
-    }
-
-    .pill {
-      padding: 2px 8px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--panel-border);
+    .paytables label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.55);
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       font-size: 12px;
     }
 
-    .chips-row {
+    .status-bar {
+      width: min(1280px, 95vw);
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      padding: 12px 16px;
       display: flex;
-      gap: 8px;
       flex-wrap: wrap;
-      margin: 8px 0 12px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
     }
 
-    .chips-row button {
-      padding: 8px 10px;
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text);
-      border: 1px solid var(--panel-border);
+    .chips {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
-    .chips-row button.active {
-      background: var(--accent);
-      color: #0b0c10;
-      border-color: var(--accent);
+    .chip {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      background: var(--chip);
+      color: #0b0b0b;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
     }
 
-    .status {
-      margin: 12px 0 4px;
-      color: var(--muted);
-      font-size: 14px;
+    .chip.active { transform: translateY(-2px); border-color: #fff; box-shadow: 0 10px 28px rgba(0,0,0,0.45); }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .status strong { color: var(--text); }
-
-    .payout {
-      color: var(--success);
+    .btn {
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: linear-gradient(135deg, #1fd1f9 0%, #4364f7 50%, #c833ff 100%);
+      color: #fff;
       font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+      transition: transform 120ms ease, box-shadow 120ms ease;
     }
 
-    .loss {
-      color: var(--danger);
-      font-weight: 700;
-    }
+    .btn.secondary { background: rgba(255, 255, 255, 0.08); color: var(--text); }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
 
-    .small { font-size: 13px; color: var(--muted); }
-
-    .divider {
-      margin: 14px 0;
-      border-bottom: 1px solid var(--panel-border);
-    }
-
-    @media (max-width: 1100px) {
-      .playmat { flex-direction: column-reverse; min-height: unset; }
-      .panel { width: auto; border-left: none; border-top: 1px solid var(--panel-border); }
-    }
+    .info { color: var(--muted); font-size: 14px; }
+    .payout { color: #4de1a5; font-weight: 700; }
   </style>
 </head>
 <body>
-  <h1>Run The Numbers — Playmat Simulator</h1>
-  <div class="playmat-wrapper">
-    <div class="playmat">
-      <div class="panel" aria-label="control panel">
-        <h2>Bet slip</h2>
-        <div class="status">Status: <strong id="stateLabel">Ready for bets</strong></div>
-        <div class="status">First card suit bets lock after the first deal. Number, card-count, and bust bets lock when the hand starts; exact-card and bust bets stay open until decided.</div>
-        <div class="divider"></div>
-        <form id="betForm" class="flex">
-          <div style="flex: 1 1 160px;">
-            <label for="betType">Bet type</label>
-            <select id="betType" required>
-              <option value="number">Number bet (A,2-10)</option>
-              <option value="cardCount">Card count bucket</option>
-              <option value="firstSuit">First card suit</option>
-              <option value="bustSuit">Bust card suit</option>
-              <option value="bustRank">Bust card rank</option>
-              <option value="exactCard">Exact card</option>
-            </select>
-          </div>
-          <div style="flex: 1 1 140px;" id="numberSelector" class="dynamic-field">
-            <label for="numberRank">Rank</label>
-            <select id="numberRank">
-              <option value="A">A</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-            </select>
-          </div>
-          <div style="flex: 1 1 140px; display:none;" id="cardCountSelector" class="dynamic-field">
-            <label for="cardCountBucket">Card count</label>
-            <select id="cardCountBucket">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8+">8+</option>
-            </select>
-          </div>
-          <div style="flex: 1 1 160px; display:none;" id="firstSuitSelector" class="dynamic-field">
-            <label for="firstSuit">Suit</label>
-            <select id="firstSuit">
-              <option value="Spades">Spades</option>
-              <option value="Hearts">Hearts</option>
-              <option value="Clubs">Clubs</option>
-              <option value="Diamonds">Diamonds</option>
-            </select>
-          </div>
-          <div style="flex: 1 1 160px; display:none;" id="bustSuitSelector" class="dynamic-field">
-            <label for="bustSuit">Suit</label>
-            <select id="bustSuit">
-              <option value="Spades">Spades</option>
-              <option value="Hearts">Hearts</option>
-              <option value="Clubs">Clubs</option>
-              <option value="Diamonds">Diamonds</option>
-            </select>
-          </div>
-          <div style="flex: 1 1 160px; display:none;" id="bustRankSelector" class="dynamic-field">
-            <label for="bustRank">Rank</label>
-            <select id="bustRank">
-              <option value="J">Jack</option>
-              <option value="Q">Queen</option>
-              <option value="K">King</option>
-              <option value="Joker">Joker</option>
-            </select>
-          </div>
-          <div style="flex: 1 1 160px; display:none;" id="exactCardSelector" class="dynamic-field flex">
-            <div style="flex: 1 1 120px;">
-              <label for="exactRank">Rank</label>
-              <select id="exactRank">
-                <option value="A">A</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-                <option value="J">J</option>
-                <option value="Q">Q</option>
-                <option value="K">K</option>
-                <option value="Joker">Joker</option>
-              </select>
-            </div>
-            <div style="flex: 1 1 120px;">
-              <label for="exactSuit">Suit</label>
-              <select id="exactSuit">
-                <option value="Spades">Spades</option>
-                <option value="Hearts">Hearts</option>
-                <option value="Clubs">Clubs</option>
-                <option value="Diamonds">Diamonds</option>
-              </select>
-            </div>
-          </div>
-          <div style="flex: 1 1 140px;" id="paytableSelector" class="dynamic-field">
-            <label for="paytable">Paytable</label>
-            <select id="paytable">
-              <option value="Standard">Standard (1× / 4× / 10× / 50×)</option>
-              <option value="Aggressive">Aggressive (2× / 8× / 40× / 200×)</option>
-              <option value="Reckless">Reckless (4× / 20× / 100× / 200×)</option>
-            </select>
-          </div>
-          <div style="flex: 1 1 140px;">
-            <label for="wager">Wager</label>
-            <input type="number" id="wager" value="5" min="1" required />
-            <div class="chips-row" aria-label="quick wager chips">
-              <button type="button" data-chip="5">5</button>
-              <button type="button" data-chip="10">10</button>
-              <button type="button" data-chip="25">25</button>
-              <button type="button" data-chip="100">100</button>
-            </div>
-          </div>
-          <div style="flex: 1 1 120px; align-self: flex-end;">
-            <button type="submit">Add bet</button>
-          </div>
-        </form>
-        <div class="divider"></div>
-        <div class="flex" style="align-items: center; justify-content: space-between;">
-          <div class="status">Open bets: <strong id="betCount">0</strong></div>
-          <div class="flex" style="gap: 8px;">
-            <button class="secondary" id="resetBets">Clear bets</button>
-            <button class="secondary" id="resetHand">Shuffle new hand</button>
-          </div>
-        </div>
-        <table class="bets-table" aria-label="bets table">
-          <thead>
-            <tr><th>Type</th><th>Pick</th><th>Wager</th><th>Details</th></tr>
-          </thead>
-          <tbody id="betsBody"></tbody>
-        </table>
-        <div class="divider"></div>
-        <div class="flex" style="align-items: center; gap: 8px;">
-          <button id="dealOne">Deal 1 card</button>
-          <button id="dealToBust">Deal to bust</button>
-        </div>
-        <div class="small">Number, card-count, and first-suit bets lock once the first card is dealt. Bust and exact-card bets can still be placed until settled.</div>
-      </div>
+  <h1>Run The Numbers Simulator</h1>
+  <div class="table-wrap">
+    <div class="overlay" id="betLayer"></div>
+    <div class="card-track" id="cardTrack"></div>
+    <div class="bust-slot" id="bustSlot">Bust</div>
+
+    <div class="paytables" aria-label="paytable selector">
+      <label><input type="radio" name="paytable" value="Standard" checked> Standard 1×/4×/10×/50×</label>
+      <label><input type="radio" name="paytable" value="Aggressive"> Aggressive 2×/8×/40×/200×</label>
+      <label><input type="radio" name="paytable" value="Reckless"> Reckless 4×/20×/100×/200×</label>
     </div>
-    <div style="margin-top: 16px; background: var(--panel-bg); border: 1px solid var(--panel-border); padding: 16px; border-radius: 12px;">
-      <div class="flex" style="justify-content: space-between; align-items: center;">
-        <h2 style="margin: 0;">Hand tracker</h2>
-        <div class="tag">Deck size: <span id="deckCount">53</span></div>
-      </div>
-      <div class="stacked-cards" id="handGrid"></div>
-      <div class="divider"></div>
-      <div class="flex" style="justify-content: space-between; align-items: center;">
-        <div>
-          <div class="status">Bust card: <strong id="bustCard">Not yet</strong></div>
-          <div class="status">First card: <strong id="firstCard">Not yet</strong></div>
-        </div>
-        <div class="tag">Total payout: <span id="totalPayout">0</span></div>
-      </div>
-      <div id="results" class="stacked-cards"></div>
+
+    <div class="suit-row" aria-label="first card suit bets">
+      <button data-spot="first-Spades">♠</button>
+      <button data-spot="first-Hearts" style="color:#ff5a7a">♥</button>
+      <button data-spot="first-Clubs" style="color:#25d0ff">♣</button>
+      <button data-spot="first-Diamonds" style="color:#f6d365">♦</button>
+    </div>
+
+    <div class="rail" aria-label="card count bets">
+      <button data-spot="count-1">1 CARD</button>
+      <button data-spot="count-2">2 CARDS</button>
+      <button data-spot="count-3">3 CARDS</button>
+      <button data-spot="count-4">4 CARDS</button>
+      <button data-spot="count-5">5 CARDS</button>
+      <button data-spot="count-6">6 CARDS</button>
+      <button data-spot="count-7">7 CARDS</button>
+      <button data-spot="count-8+">8+ CARDS</button>
     </div>
   </div>
+
+  <div class="status-bar">
+    <div class="chips">
+      <span class="info">Chip rack</span>
+      <button class="chip active" data-chip="5">5</button>
+      <button class="chip" data-chip="10">10</button>
+      <button class="chip" data-chip="25">25</button>
+      <button class="chip" data-chip="100">100</button>
+    </div>
+    <div class="controls">
+      <button class="btn" id="dealOne">Deal</button>
+      <button class="btn" id="dealToBust">Deal to bust</button>
+      <button class="btn secondary" id="clearBets">Clear bets</button>
+      <button class="btn secondary" id="resetHand">New deck</button>
+    </div>
+    <div class="info">Status: <span id="stateLabel">Ready</span> • Deck: <span id="deckCount">53</span> • Total payout: <span class="payout" id="payout">0</span></div>
+  </div>
+
   <script src="simulator.js"></script>
 </body>
 </html>
