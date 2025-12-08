@@ -10,14 +10,12 @@
   <style>
     :root {
       --bg: #080a10;
-      --glow: rgba(0, 255, 255, 0.2);
       --chip: #ff6b6b;
       --text: #e9eef7;
       --muted: #9fb4d6;
       --accent: #25d0ff;
       --card-slot: rgba(255, 255, 255, 0.08);
       --card-border: rgba(255, 255, 255, 0.25);
-      --pill: rgba(0, 0, 0, 0.55);
     }
 
     * { box-sizing: border-box; }
@@ -51,26 +49,22 @@
       box-shadow: 0 20px 80px rgba(0, 0, 0, 0.35);
     }
 
-    .overlay {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
+    .overlay { position: absolute; inset: 0; pointer-events: none; }
 
     .card-track {
       position: absolute;
-      top: 20px;
+      top: 6%;
       left: 50%;
       transform: translateX(-50%);
-      width: 80%;
+      width: 74%;
       display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 8px;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 10px;
       pointer-events: none;
     }
 
     .card-slot {
-      height: 62px;
+      height: 64px;
       border: 1px solid var(--card-border);
       border-radius: 10px;
       background: var(--card-slot);
@@ -84,13 +78,13 @@
 
     .bust-slot {
       position: absolute;
-      right: 4.5%;
-      top: 34%;
-      width: 120px;
-      height: 120px;
+      right: 7.5%;
+      top: 30%;
+      width: 132px;
+      height: 132px;
       border-radius: 50%;
       border: 2px dashed var(--accent);
-      background: rgba(0, 0, 0, 0.45);
+      background: rgba(0, 0, 0, 0.2);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -100,91 +94,32 @@
       text-align: center;
     }
 
-    .bet-spot {
+    .hotspot {
       position: absolute;
-      width: 62px;
-      height: 62px;
-      border-radius: 50%;
-      border: 2px solid rgba(255, 255, 255, 0.35);
-      background: rgba(0, 0, 0, 0.45);
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
+      border: 2px solid transparent;
+      background: transparent;
+      padding: 0;
       pointer-events: auto;
-      transition: transform 120ms ease, box-shadow 120ms ease;
-    }
-
-    .bet-spot:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
-    .bet-spot .amount { position: absolute; bottom: -18px; font-size: 12px; color: var(--accent); }
-
-    .rail {
-      position: absolute;
-      left: 12%;
-      right: 12%;
-      bottom: 20%;
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      gap: 8px;
-      pointer-events: none;
-    }
-
-    .rail button {
-      pointer-events: auto;
-      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 12px;
-      background: rgba(0, 0, 0, 0.6);
-      color: var(--text);
-      padding: 10px 0;
-      font-weight: 700;
-      text-shadow: 0 0 8px rgba(0,0,0,0.3);
-      transition: transform 120ms ease, box-shadow 120ms ease;
+      transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
     }
 
-    .rail button:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,0.35); }
-
-    .suit-row {
+    .hotspot:hover { border-color: rgba(255, 255, 255, 0.25); box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.06); }
+    .hotspot.circle { border-radius: 50%; }
+    .hotspot .amount {
       position: absolute;
-      left: 11%;
-      bottom: 28%;
-      display: flex;
-      gap: 12px;
-      pointer-events: none;
-    }
-
-    .suit-row button {
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      background: rgba(0, 0, 0, 0.55);
-      color: #ff6b6b;
-      font-size: 20px;
-      font-weight: 700;
-      pointer-events: auto;
-    }
-
-    .paytables {
-      position: absolute;
-      left: 11%;
-      top: 32%;
-      display: grid;
-      gap: 6px;
-      pointer-events: auto;
-      color: var(--muted);
-    }
-
-    .paytables label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(0, 0, 0, 0.55);
-      padding: 6px 10px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      bottom: -18px;
+      left: 50%;
+      transform: translateX(-50%);
       font-size: 12px;
+      color: var(--accent);
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
     }
+    .hotspot.active { border-color: rgba(37, 208, 255, 0.8); box-shadow: 0 0 0 8px rgba(37, 208, 255, 0.12); background: rgba(37,208,255,0.08); }
+
+    .paytable-hotspot { color: var(--muted); font-size: 12px; padding: 8px 10px; display: flex; align-items: center; gap: 6px; }
+    .paytable-hotspot input { pointer-events: auto; }
 
     .status-bar {
       width: min(1280px, 95vw);
@@ -251,32 +186,9 @@
   <h1>Run The Numbers Simulator</h1>
   <div class="table-wrap">
     <div class="overlay" id="betLayer"></div>
+    <div class="overlay" id="paytableLayer"></div>
     <div class="card-track" id="cardTrack"></div>
     <div class="bust-slot" id="bustSlot">Bust</div>
-
-    <div class="paytables" aria-label="paytable selector">
-      <label><input type="radio" name="paytable" value="Standard" checked> Standard 1×/4×/10×/50×</label>
-      <label><input type="radio" name="paytable" value="Aggressive"> Aggressive 2×/8×/40×/200×</label>
-      <label><input type="radio" name="paytable" value="Reckless"> Reckless 4×/20×/100×/200×</label>
-    </div>
-
-    <div class="suit-row" aria-label="first card suit bets">
-      <button data-spot="first-Spades">♠</button>
-      <button data-spot="first-Hearts" style="color:#ff5a7a">♥</button>
-      <button data-spot="first-Clubs" style="color:#25d0ff">♣</button>
-      <button data-spot="first-Diamonds" style="color:#f6d365">♦</button>
-    </div>
-
-    <div class="rail" aria-label="card count bets">
-      <button data-spot="count-1">1 CARD</button>
-      <button data-spot="count-2">2 CARDS</button>
-      <button data-spot="count-3">3 CARDS</button>
-      <button data-spot="count-4">4 CARDS</button>
-      <button data-spot="count-5">5 CARDS</button>
-      <button data-spot="count-6">6 CARDS</button>
-      <button data-spot="count-7">7 CARDS</button>
-      <button data-spot="count-8+">8+ CARDS</button>
-    </div>
   </div>
 
   <div class="status-bar">
