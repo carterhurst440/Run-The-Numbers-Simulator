@@ -36,15 +36,16 @@ This repository hosts a fresh branch of **Run The Numbers** focused on simulatin
 
 ## Simulator usage
 1. Open `index.html` in a browser (or serve the repo root with `python -m http.server 8000` and visit `http://localhost:8000`).
-2. Tap a **chip** in the rack along the bottom to choose a wager size (5, 10, 25, 100).
-3. Click any **hotspot** on the playmat art (faint dashed outlines with labels) to drop the selected chip value onto that printed region. The overlays are sized and positioned to match the artwork:
+2. The board renders at a fixed native size to mirror the reference art; on smaller screens, use the horizontal and vertical scroll bars to pan without the regions overlapping or resizing awkwardly.
+3. Tap a **chip** in the rack along the bottom to choose a wager size (5, 10, 25, 100).
+4. Click any **hotspot** on the playmat art (faint dashed outlines with labels) to drop the selected chip value onto that printed region. The overlays are sized and positioned to match the artwork:
    - **Number bets** (A–10) cover each printed column of hearts/spades/clubs/diamonds.
    - **Bust ranks and suits** sit on the right-side circles beneath the “Bust Bets” banner.
    - **Card-count buckets** map to the colored boxes across the lower rail (1 card through 8+).
    - **First-card suits** align to the four suit circles just above the card-count rail.
    - **Paytable selection** lives on the printed “SELECT PAYTABLE” rail on the left.
-4. Use **Deal** to burn a single card or **Deal to bust** to resolve the hand automatically. The card slots above A–10 show the stream of cards, while the bust card lands inside the circular bust overlay on the right.
-5. Total payout and hand status are shown in the bar beneath the mat. Bets lock after the first card is dealt, except bust bets which can continue to accept chips.
+5. Use **Deal** to burn a single card or **Deal to bust** to resolve the hand automatically. The card slots above A–10 show the stream of cards, while the bust card lands inside the circular bust overlay on the right.
+6. Total payout and hand status are shown in the bar beneath the mat. Bets lock after the first card is dealt, except bust bets which can continue to accept chips.
 
 All payouts are for simulation only and can be tuned in `simulator.js` via `STATIC_PAYOUTS` and `PAYTABLES`.
 

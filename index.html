@@ -37,26 +37,34 @@
 
     h1 { margin: 0; letter-spacing: 0.04em; }
 
+    .board-scroll {
+      width: 100%;
+      overflow: auto;
+      padding-bottom: 8px;
+    }
+
     .table-wrap {
       position: relative;
-      width: min(1280px, 95vw);
-      aspect-ratio: 16 / 7.3;
+      width: 1420px;
+      min-width: 1420px;
+      aspect-ratio: 190 / 75;
       background-image: url('https://res.cloudinary.com/ds1mvnflk/image/upload/v1705936744/oetrqkerubydmvesmdq7.png');
       background-size: cover;
       background-position: center;
       border-radius: 18px;
       overflow: hidden;
       box-shadow: 0 20px 80px rgba(0, 0, 0, 0.35);
+      margin: 0 auto;
     }
 
     .overlay { position: absolute; inset: 0; pointer-events: none; }
 
     .card-track {
       position: absolute;
-      top: 5.5%;
+      top: 4.5%;
       left: 50%;
       transform: translateX(-50%);
-      width: 70%;
+      width: 72%;
       display: grid;
       grid-template-columns: repeat(10, 1fr);
       gap: 10px;
@@ -78,10 +86,10 @@
 
     .bust-slot {
       position: absolute;
-      right: 6.5%;
-      top: 31%;
-      width: 124px;
-      height: 124px;
+      right: 6.4%;
+      top: 30.5%;
+      width: 128px;
+      height: 128px;
       border-radius: 50%;
       border: 2px dashed var(--accent);
       background: rgba(0, 0, 0, 0.24);
@@ -96,7 +104,7 @@
 
     .hotspot {
       position: absolute;
-      border: 1px dashed rgba(255, 255, 255, 0.18);
+      border: 1.5px dashed rgba(255, 255, 255, 0.24);
       background: rgba(255, 255, 255, 0.02);
       padding: 0;
       pointer-events: auto;
@@ -120,19 +128,22 @@
       font-weight: 700;
       text-shadow: 0 2px 4px rgba(0,0,0,0.6);
     }
-    .hotspot.active { border-color: rgba(37, 208, 255, 0.85); box-shadow: 0 0 0 8px rgba(37, 208, 255, 0.15); background: rgba(37,208,255,0.1); }
+    .hotspot.active { border-color: rgba(37, 208, 255, 0.85); box-shadow: 0 0 0 8px rgba(37, 208, 255, 0.15); background: rgba(37, 208, 255, 0.1); }
 
-    .hotspot::after {
-      content: attr(data-label);
+    .hotspot .label {
       position: absolute;
-      bottom: -16px;
+      top: -18px;
       left: 50%;
       transform: translateX(-50%);
+      padding: 2px 6px;
+      border-radius: 8px;
+      background: rgba(8, 10, 16, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: var(--text);
       font-size: 11px;
-      color: var(--muted);
       white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.35);
       pointer-events: none;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.55);
     }
 
     .paytable-hotspot { color: var(--muted); font-size: 12px; padding: 8px 10px; display: flex; align-items: center; gap: 6px; }
@@ -140,7 +151,8 @@
     .paytable-hotspot input { pointer-events: auto; }
 
     .status-bar {
-      width: min(1280px, 95vw);
+      width: 100%;
+      max-width: 1420px;
       background: rgba(0, 0, 0, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 14px;
@@ -202,11 +214,13 @@
 </head>
 <body>
   <h1>Run The Numbers Simulator</h1>
-  <div class="table-wrap">
-    <div class="overlay" id="betLayer"></div>
-    <div class="overlay" id="paytableLayer"></div>
-    <div class="card-track" id="cardTrack"></div>
-    <div class="bust-slot" id="bustSlot">Bust</div>
+  <div class="board-scroll">
+    <div class="table-wrap">
+      <div class="overlay" id="betLayer"></div>
+      <div class="overlay" id="paytableLayer"></div>
+      <div class="card-track" id="cardTrack"></div>
+      <div class="bust-slot" id="bustSlot">Bust</div>
+    </div>
   </div>
 
   <div class="status-bar">

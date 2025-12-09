@@ -25,9 +25,9 @@ const BET_TYPES = {
 };
 
 const PAYTABLE_SPOTS = [
-  { id: 'Standard', label: 'Standard 1×/4×/10×/50×', pos: { top: '34%', left: '7%', width: '11%', height: '7%' } },
-  { id: 'Aggressive', label: 'Aggressive 2×/8×/40×/200×', pos: { top: '42%', left: '7%', width: '11%', height: '7%' } },
-  { id: 'Reckless', label: 'Reckless 4×/20×/100×/200×', pos: { top: '50%', left: '7%', width: '11%', height: '7%' } },
+  { id: 'Standard', label: 'Standard 1×/4×/10×/50×', pos: { top: '34%', left: '7.4%', width: '11.5%', height: '6.6%' } },
+  { id: 'Aggressive', label: 'Aggressive 2×/8×/40×/200×', pos: { top: '42.5%', left: '7.4%', width: '11.5%', height: '6.6%' } },
+  { id: 'Reckless', label: 'Reckless 4×/20×/100×/200×', pos: { top: '51%', left: '7.4%', width: '11.5%', height: '6.6%' } },
 ];
 
 const NUMBER_SPOTS = RANKS.slice(0, 10).map((rank, index) => ({
@@ -35,27 +35,27 @@ const NUMBER_SPOTS = RANKS.slice(0, 10).map((rank, index) => ({
   label: `Number ${rank}`,
   type: BET_TYPES.NUMBER,
   rank,
-  pos: { top: '26%', left: `${21 + index * 7.35}%`, width: '6.6%', height: '12%' },
+  pos: { top: '23.5%', left: `${21.6 + index * 7.35}%`, width: '6.45%', height: '11.2%' },
 }));
 
 const SPOTS = [
   ...NUMBER_SPOTS,
 
   // First card suit (bottom left cluster)
-  { id: 'first-Spades', label: 'First card Spades', type: BET_TYPES.FIRST_SUIT, suit: 'Spades', pos: { top: '60%', left: '12%', width: '6.3%', height: '10%' }, shape: 'circle' },
-  { id: 'first-Hearts', label: 'First card Hearts', type: BET_TYPES.FIRST_SUIT, suit: 'Hearts', pos: { top: '60%', left: '19%', width: '6.3%', height: '10%' }, shape: 'circle' },
-  { id: 'first-Clubs', label: 'First card Clubs', type: BET_TYPES.FIRST_SUIT, suit: 'Clubs', pos: { top: '60%', left: '26%', width: '6.3%', height: '10%' }, shape: 'circle' },
-  { id: 'first-Diamonds', label: 'First card Diamonds', type: BET_TYPES.FIRST_SUIT, suit: 'Diamonds', pos: { top: '60%', left: '33%', width: '6.3%', height: '10%' }, shape: 'circle' },
+  { id: 'first-Spades', label: 'First card Spades', type: BET_TYPES.FIRST_SUIT, suit: 'Spades', pos: { top: '59%', left: '12.2%', width: '6.2%', height: '10.2%' }, shape: 'circle' },
+  { id: 'first-Hearts', label: 'First card Hearts', type: BET_TYPES.FIRST_SUIT, suit: 'Hearts', pos: { top: '59%', left: '19.1%', width: '6.2%', height: '10.2%' }, shape: 'circle' },
+  { id: 'first-Clubs', label: 'First card Clubs', type: BET_TYPES.FIRST_SUIT, suit: 'Clubs', pos: { top: '59%', left: '26%', width: '6.2%', height: '10.2%' }, shape: 'circle' },
+  { id: 'first-Diamonds', label: 'First card Diamonds', type: BET_TYPES.FIRST_SUIT, suit: 'Diamonds', pos: { top: '59%', left: '32.9%', width: '6.2%', height: '10.2%' }, shape: 'circle' },
 
   // Card count rail along the bottom
-  { id: 'count-1', label: '1 card', type: BET_TYPES.CARD_COUNT, bucket: '1', pos: { top: '73%', left: '26%', width: '7.5%', height: '13%' } },
-  { id: 'count-2', label: '2 cards', type: BET_TYPES.CARD_COUNT, bucket: '2', pos: { top: '73%', left: '33.7%', width: '7.5%', height: '13%' } },
-  { id: 'count-3', label: '3 cards', type: BET_TYPES.CARD_COUNT, bucket: '3', pos: { top: '73%', left: '41.4%', width: '7.5%', height: '13%' } },
-  { id: 'count-4', label: '4 cards', type: BET_TYPES.CARD_COUNT, bucket: '4', pos: { top: '73%', left: '49.1%', width: '7.5%', height: '13%' } },
-  { id: 'count-5', label: '5 cards', type: BET_TYPES.CARD_COUNT, bucket: '5', pos: { top: '73%', left: '56.8%', width: '7.5%', height: '13%' } },
-  { id: 'count-6', label: '6 cards', type: BET_TYPES.CARD_COUNT, bucket: '6', pos: { top: '73%', left: '64.5%', width: '7.5%', height: '13%' } },
-  { id: 'count-7', label: '7 cards', type: BET_TYPES.CARD_COUNT, bucket: '7', pos: { top: '73%', left: '72.2%', width: '7.5%', height: '13%' } },
-  { id: 'count-8+', label: '8+ cards', type: BET_TYPES.CARD_COUNT, bucket: '8+', pos: { top: '73%', left: '79.9%', width: '7.5%', height: '13%' } },
+  { id: 'count-1', label: '1 card', type: BET_TYPES.CARD_COUNT, bucket: '1', pos: { top: '73.5%', left: '26%', width: '7.6%', height: '13%' } },
+  { id: 'count-2', label: '2 cards', type: BET_TYPES.CARD_COUNT, bucket: '2', pos: { top: '73.5%', left: '33.8%', width: '7.6%', height: '13%' } },
+  { id: 'count-3', label: '3 cards', type: BET_TYPES.CARD_COUNT, bucket: '3', pos: { top: '73.5%', left: '41.6%', width: '7.6%', height: '13%' } },
+  { id: 'count-4', label: '4 cards', type: BET_TYPES.CARD_COUNT, bucket: '4', pos: { top: '73.5%', left: '49.4%', width: '7.6%', height: '13%' } },
+  { id: 'count-5', label: '5 cards', type: BET_TYPES.CARD_COUNT, bucket: '5', pos: { top: '73.5%', left: '57.2%', width: '7.6%', height: '13%' } },
+  { id: 'count-6', label: '6 cards', type: BET_TYPES.CARD_COUNT, bucket: '6', pos: { top: '73.5%', left: '65%', width: '7.6%', height: '13%' } },
+  { id: 'count-7', label: '7 cards', type: BET_TYPES.CARD_COUNT, bucket: '7', pos: { top: '73.5%', left: '72.8%', width: '7.6%', height: '13%' } },
+  { id: 'count-8+', label: '8+ cards', type: BET_TYPES.CARD_COUNT, bucket: '8+', pos: { top: '73.5%', left: '80.6%', width: '7.6%', height: '13%' } },
 
   // Bust ranks (right column)
   { id: 'bust-J', label: 'Bust Jack', type: BET_TYPES.BUST_RANK, rank: 'J', pos: { top: '45%', left: '82.3%', width: '7.5%', height: '7%' }, shape: 'circle' },
@@ -273,9 +273,13 @@ function renderSpots() {
     if (spot.pos.width) btn.style.width = spot.pos.width;
     if (spot.pos.height) btn.style.height = spot.pos.height;
     btn.setAttribute('aria-label', spot.label);
-    btn.setAttribute('data-label', spot.label);
     btn.title = spot.label;
     btn.dataset.id = spot.id;
+
+    const label = document.createElement('span');
+    label.className = 'label';
+    label.textContent = spot.label;
+    btn.appendChild(label);
 
     const wager = state.bets
       .filter((bet) =>
