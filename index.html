@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Run The Numbers — Playmat Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080a10;
+      --chip: #ff6b6b;
+      --text: #e9eef7;
+      --muted: #9fb4d6;
+      --accent: #25d0ff;
+      --card-slot: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.25);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at 20% 20%, rgba(33, 150, 243, 0.05), transparent 45%),
+                  radial-gradient(circle at 80% 0%, rgba(255, 64, 129, 0.08), transparent 35%),
+                  var(--bg);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+      gap: 16px;
+    }
+
+    h1 { margin: 0; letter-spacing: 0.04em; }
+
+    .board-scroll {
+      width: 100%;
+      overflow: auto;
+      padding-bottom: 8px;
+    }
+
+    .table-wrap {
+      position: relative;
+      width: 1420px;
+      min-width: 1420px;
+      aspect-ratio: 190 / 75;
+      background-image: url('https://res.cloudinary.com/ds1mvnflk/image/upload/v1705936744/oetrqkerubydmvesmdq7.png');
+      background-size: cover;
+      background-position: center;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.35);
+      margin: 0 auto;
+    }
+
+    .overlay { position: absolute; inset: 0; pointer-events: none; }
+
+    .card-track {
+      position: absolute;
+      top: 4.5%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 72%;
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .card-slot {
+      height: 64px;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      background: var(--card-slot);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      backdrop-filter: blur(4px);
+    }
+
+    .bust-slot {
+      position: absolute;
+      right: 6.4%;
+      top: 30.5%;
+      width: 128px;
+      height: 128px;
+      border-radius: 50%;
+      border: 2px dashed var(--accent);
+      background: rgba(0, 0, 0, 0.24);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      pointer-events: none;
+      text-align: center;
+    }
+
+    .hotspot {
+      position: absolute;
+      border: 1.5px dashed rgba(255, 255, 255, 0.24);
+      background: rgba(255, 255, 255, 0.02);
+      padding: 0;
+      pointer-events: auto;
+      border-radius: 12px;
+      transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+      color: var(--muted);
+      font-size: 12px;
+      display: grid;
+      place-items: center;
+    }
+
+    .hotspot:hover { border-color: rgba(255, 255, 255, 0.35); box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.08); }
+    .hotspot.circle { border-radius: 50%; }
+    .hotspot .amount {
+      position: absolute;
+      bottom: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+    }
+    .hotspot.active { border-color: rgba(37, 208, 255, 0.85); box-shadow: 0 0 0 8px rgba(37, 208, 255, 0.15); background: rgba(37, 208, 255, 0.1); }
+
+    .hotspot .label {
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 2px 6px;
+      border-radius: 8px;
+      background: rgba(8, 10, 16, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: var(--text);
+      font-size: 11px;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+      pointer-events: none;
+    }
+
+    .paytable-hotspot { color: var(--muted); font-size: 12px; padding: 8px 10px; display: flex; align-items: center; gap: 6px; }
+    .paytable-hotspot::after { display: none; }
+    .paytable-hotspot input { pointer-events: auto; }
+
+    .status-bar {
+      width: 100%;
+      max-width: 1420px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      padding: 12px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .chips {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      background: var(--chip);
+      color: #0b0b0b;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .chip.active { transform: translateY(-2px); border-color: #fff; box-shadow: 0 10px 28px rgba(0,0,0,0.45); }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: linear-gradient(135deg, #1fd1f9 0%, #4364f7 50%, #c833ff 100%);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    .btn.secondary { background: rgba(255, 255, 255, 0.08); color: var(--text); }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
+
+    .info { color: var(--muted); font-size: 14px; }
+    .payout { color: #4de1a5; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <h1>Run The Numbers Simulator</h1>
+  <div class="board-scroll">
+    <div class="table-wrap">
+      <div class="overlay" id="betLayer"></div>
+      <div class="overlay" id="paytableLayer"></div>
+      <div class="card-track" id="cardTrack"></div>
+      <div class="bust-slot" id="bustSlot">Bust</div>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <div class="chips">
+      <span class="info">Chip rack</span>
+      <button class="chip active" data-chip="5">5</button>
+      <button class="chip" data-chip="10">10</button>
+      <button class="chip" data-chip="25">25</button>
+      <button class="chip" data-chip="100">100</button>
+    </div>
+    <div class="controls">
+      <button class="btn" id="dealOne">Deal</button>
+      <button class="btn" id="dealToBust">Deal to bust</button>
+      <button class="btn secondary" id="clearBets">Clear bets</button>
+      <button class="btn secondary" id="resetHand">New deck</button>
+    </div>
+    <div class="info">Status: <span id="stateLabel">Ready</span> • Deck: <span id="deckCount">53</span> • Total payout: <span class="payout" id="payout">0</span></div>
+  </div>
+
+  <script src="simulator.js"></script>
+</body>
+</html>
