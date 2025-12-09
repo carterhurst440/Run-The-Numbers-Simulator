@@ -33,6 +33,7 @@
       align-items: center;
       padding: 16px;
       gap: 16px;
+      padding-bottom: 180px;
     }
 
     h1 { margin: 0; letter-spacing: 0.04em; }
@@ -59,30 +60,57 @@
 
     .overlay { position: absolute; inset: 0; pointer-events: none; }
 
-    .card-track {
+    .card-track { position: absolute; inset: 0; pointer-events: none; }
+
+    .card-column {
       position: absolute;
-      top: 4.5%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 72%;
-      display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 10px;
-      pointer-events: none;
+      top: 5.5%;
+      height: 150px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
     }
 
     .card-slot {
-      height: 64px;
+      position: relative;
+      width: 90%;
+      height: 140px;
       border: 1px solid var(--card-border);
       border-radius: 10px;
-      background: var(--card-slot);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+      backdrop-filter: blur(4px);
+      overflow: hidden;
+    }
+
+    .card-slot::after {
+      content: attr(data-rank);
+      position: absolute;
+      left: 8px;
+      top: 6px;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .card {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 52px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.1);
       color: var(--text);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
-      backdrop-filter: blur(4px);
+      font-weight: 700;
+      font-size: 16px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.35);
     }
+
+    .card.bust { border-color: #ff6b6b; color: #ff9b9b; }
 
     .bust-slot {
       position: absolute;
@@ -102,7 +130,7 @@
       text-align: center;
     }
 
-    .hotspot {
+    .hotspot { 
       position: absolute;
       border: 1.5px dashed rgba(255, 255, 255, 0.24);
       background: rgba(255, 255, 255, 0.02);
@@ -115,6 +143,16 @@
       display: grid;
       place-items: center;
     }
+
+    .hotspot .icon {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      pointer-events: none;
+    }
+
+    .hotspot.suit-hearts .icon, .hotspot.suit-diamonds .icon { color: #ff9b9b; }
+    .hotspot.suit-spades .icon, .hotspot.suit-clubs .icon { color: #cfe5ff; }
 
     .hotspot:hover { border-color: rgba(255, 255, 255, 0.35); box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.08); }
     .hotspot.circle { border-radius: 50%; }
@@ -150,18 +188,32 @@
     .paytable-hotspot::after { display: none; }
     .paytable-hotspot input { pointer-events: auto; }
 
+    .control-dock {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 14px 22px;
+      background: linear-gradient(180deg, rgba(8, 10, 16, 0.86) 0%, rgba(8, 10, 16, 0.96) 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+    }
+
     .status-bar {
       width: 100%;
       max-width: 1420px;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 14px;
       padding: 12px 16px;
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       align-items: center;
-      justify-content: space-between;
-      gap: 10px;
+      gap: 12px;
     }
 
     .chips {
@@ -191,6 +243,7 @@
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
+      justify-content: center;
     }
 
     .btn {
@@ -223,21 +276,24 @@
     </div>
   </div>
 
-  <div class="status-bar">
-    <div class="chips">
-      <span class="info">Chip rack</span>
-      <button class="chip active" data-chip="5">5</button>
-      <button class="chip" data-chip="10">10</button>
-      <button class="chip" data-chip="25">25</button>
-      <button class="chip" data-chip="100">100</button>
+  <div class="control-dock">
+    <div class="status-bar">
+      <div class="chips">
+        <span class="info">Chip rack</span>
+        <button class="chip active" data-chip="5">5</button>
+        <button class="chip" data-chip="10">10</button>
+        <button class="chip" data-chip="25">25</button>
+        <button class="chip" data-chip="100">100</button>
+      </div>
+      <div class="controls">
+        <button class="btn" id="dealOne">Deal</button>
+        <button class="btn" id="dealToBust">Deal to bust</button>
+        <button class="btn secondary" id="rebet">Rebet</button>
+        <button class="btn secondary" id="clearBets">Clear bets</button>
+        <button class="btn secondary" id="resetHand">New deck</button>
+      </div>
+      <div class="info">Status: <span id="stateLabel">Ready</span> • Deck: <span id="deckCount">53</span> • Total payout: <span class="payout" id="payout">0</span></div>
     </div>
-    <div class="controls">
-      <button class="btn" id="dealOne">Deal</button>
-      <button class="btn" id="dealToBust">Deal to bust</button>
-      <button class="btn secondary" id="clearBets">Clear bets</button>
-      <button class="btn secondary" id="resetHand">New deck</button>
-    </div>
-    <div class="info">Status: <span id="stateLabel">Ready</span> • Deck: <span id="deckCount">53</span> • Total payout: <span class="payout" id="payout">0</span></div>
   </div>
 
   <script src="simulator.js"></script>

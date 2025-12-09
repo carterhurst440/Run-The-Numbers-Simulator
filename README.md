@@ -28,8 +28,9 @@ This repository hosts a fresh branch of **Run The Numbers** focused on simulatin
 - Bet on the suit of the very first card dealt.
 
 ### Exact card bets
-- Bet that a specific card (e.g., `8♠`) appears anywhere in the hand; may be placed until that exact card has appeared.
-- This wager type is defined in the engine but not yet exposed on the current on-mat overlay.
+- Bet that a specific card (A–10 by suit, e.g., `8♠`) appears anywhere in the hand; may be placed until that exact card has appeared.
+- Each suit/rank ladder sits in the same column as its number bet with suit icons descending down the column.
+- Pays **13 to 1**.
 
 ### Timing
 - All bets except **bust card** and **exact card** must be locked **before the first card is dealt**. Bust and exact-card bets remain open until their outcomes are determined.
@@ -37,15 +38,17 @@ This repository hosts a fresh branch of **Run The Numbers** focused on simulatin
 ## Simulator usage
 1. Open `index.html` in a browser (or serve the repo root with `python -m http.server 8000` and visit `http://localhost:8000`).
 2. The board renders at a fixed native size to mirror the reference art; on smaller screens, use the horizontal and vertical scroll bars to pan without the regions overlapping or resizing awkwardly.
-3. Tap a **chip** in the rack along the bottom to choose a wager size (5, 10, 25, 100).
-4. Click any **hotspot** on the playmat art (faint dashed outlines with labels) to drop the selected chip value onto that printed region. The overlays are sized and positioned to match the artwork:
-   - **Number bets** (A–10) cover each printed column of hearts/spades/clubs/diamonds.
-   - **Bust ranks and suits** sit on the right-side circles beneath the “Bust Bets” banner.
-   - **Card-count buckets** map to the colored boxes across the lower rail (1 card through 8+).
-   - **First-card suits** align to the four suit circles just above the card-count rail.
+3. The chip rack and controls are **pinned to the bottom** of the viewport; tap a chip to choose a wager size (5, 10, 25, 100).
+4. Click any **hotspot** on the playmat art (faint dashed outlines with labels) to drop the selected chip value onto that printed region. The overlays are sized and positioned to match the artwork and to avoid overlap:
+   - **Number bets** (A–10) cover each printed column; the card track sits directly above these columns so every rank falls into its matching lane.
+   - **Exact card bets** sit inside each column as four suit icons (♠, ♥, ♣, ♦) cascading downward beneath the main number bet.
+   - **Card-count buckets** form the first row beneath the numbers.
+   - **First-card suits** live on the lower-left circles under the count rail.
+   - **Bust suits** sit on the upper-right circles under the count rail, with **bust ranks** aligned directly below them.
    - **Paytable selection** lives on the printed “SELECT PAYTABLE” rail on the left.
-5. Use **Deal** to burn a single card or **Deal to bust** to resolve the hand automatically. The card slots above A–10 show the stream of cards, while the bust card lands inside the circular bust overlay on the right.
-6. Total payout and hand status are shown in the bar beneath the mat. Bets lock after the first card is dealt, except bust bets which can continue to accept chips.
+5. Use **Deal** to burn a single card or **Deal to bust** to resolve the hand automatically. Each drawn number card stacks (slightly offset) in its dedicated column above the matching number bet; the bust card lands inside the circular bust overlay on the right.
+6. Total payout and hand status are shown in the pinned bar. Bets lock after the first card is dealt (except bust bets and exact-card bets, which can continue until decided).
+7. At the end of a hand, the deck automatically reshuffles and open bets clear. You can **Rebet** to restore the wagers you had at the start of the previous hand or start placing fresh bets immediately; the old cards remain visible until the next deal clears the track.
 
 All payouts are for simulation only and can be tuned in `simulator.js` via `STATIC_PAYOUTS` and `PAYTABLES`.
 
